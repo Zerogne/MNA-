@@ -40,12 +40,7 @@ export default function HeroSection() {
               Машин үзэх
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link
-              href="#how-to-buy"
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-white/70 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition-all hover:bg-white/10"
-            >
-              Хэрхэн худалдан авах
-            </Link>
+           
           </div>
         </div>
       </div>

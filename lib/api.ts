@@ -12,6 +12,9 @@ export type Car = {
   badge: 'NEW' | 'SOLD'
   image: string
   description?: string
+  color?: string
+  fuel_type?: string
+  options?: string
   created_at: string
 }
 

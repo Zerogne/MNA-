@@ -63,7 +63,7 @@ export default function SearchBar() {
           </div>
           {/* Year From */}
           <div className="flex-1">
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Оноос</label>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Он</label>
             <select
               value={yearFrom}
               onChange={(e) => setYearFrom(e.target.value)}
@@ -74,17 +74,7 @@ export default function SearchBar() {
             </select>
           </div>
           {/* Year To */}
-          <div className="flex-1">
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Он хүртэл</label>
-            <select
-              value={yearTo}
-              onChange={(e) => setYearTo(e.target.value)}
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-[#1a1a2e] focus:border-[#1e3a8a] focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20"
-            >
-              <option value="">Бүх он</option>
-              {years.map((y) => <option key={y}>{y}</option>)}
-            </select>
-          </div>
+          
           {/* Price Range */}
           <div className="flex-1">
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Үнийн хязгаар</label>

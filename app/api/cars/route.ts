@@ -23,12 +23,22 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { name, year, price, mileage, engine, transmission, badge, image } = await request.json()
-  const { data, error } = await supabase
-    .from('cars')
-    .insert({ name, year: Number(year), price, mileage, engine, transmission, badge: badge ?? 'NEW', image })
-    .select()
-    .single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  const body = await request.json()
+  const { name, year, price, mileage, engine, transmission, badge, image, description, color, fuel_type, options } = body
+
+  const payload: Record<string, unknown> = {
+    name, year: Number(year), price, mileage, engine, transmission,
+    badge: badge ?? 'NEW', image,
+  }
+  if (description !== undefined) payload.description = description
+  if (color !== undefined) payload.color = color
+  if (fuel_type !== undefined) payload.fuel_type = fuel_type
+  if (options !== undefined) payload.options = options
+
+  const { data, error } = await supabase.from('cars').insert(payload).select().single()
+  if (error) {
+    console.error('[POST /api/cars]', error.message)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
   return NextResponse.json(data, { status: 201 })
 }
