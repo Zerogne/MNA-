@@ -1,11 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { useMemo, useState } from "react"
+import Image from "next/image"
+import { Suspense, useEffect, useMemo, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import { Gauge, Settings2, RefreshCcw, SlidersHorizontal, X } from "lucide-react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
-import { carListings, getCarSlug } from "@/lib/cars"
+import { fetchCars, getCarSlug, getMainImage, type Car } from "@/lib/api"
 import {
   Sheet,
   SheetContent,
@@ -47,12 +49,16 @@ function matchesMileage(mileage: string, range: string) {
   return true
 }
 
-// ─── static derived data ──────────────────────────────────────────────────────
+// ─── derived filter options (computed from live car list) ─────────────────────
 
-const ALL_BRANDS = Array.from(new Set(carListings.map((c) => getBrand(c.name)))).sort()
-const ALL_TRANSMISSIONS = Array.from(new Set(carListings.map((c) => c.transmission))).sort()
-const ALL_YEARS = Array.from(new Set(carListings.map((c) => c.year))).sort((a, b) => a - b)
-const ALL_FUEL_TYPES = Array.from(new Set(carListings.map((c) => getFuelType(c.engine)))).sort()
+function deriveOptions(cars: Car[]) {
+  return {
+    brands: Array.from(new Set(cars.map((c) => getBrand(c.name)))).sort(),
+    transmissions: Array.from(new Set(cars.map((c) => c.transmission))).sort(),
+    years: Array.from(new Set(cars.map((c) => c.year))).sort((a, b) => a - b),
+    fuelTypes: Array.from(new Set(cars.map((c) => getFuelType(c.engine)))).sort(),
+  }
+}
 
 const PRICE_OPTIONS = [
   { label: "Бүх үнэ", value: "all" },
@@ -164,9 +170,11 @@ function StyledSelect({
 function FilterPanel({
   filters,
   setFilters,
+  options,
 }: {
   filters: FilterState
   setFilters: React.Dispatch<React.SetStateAction<FilterState>>
+  options: ReturnType<typeof deriveOptions>
 }) {
   const set = <K extends keyof FilterState>(key: K, value: FilterState[K]) =>
     setFilters((prev) => ({ ...prev, [key]: value }))
@@ -222,7 +230,7 @@ function FilterPanel({
       <div>
         <FilterLabel>Марк</FilterLabel>
         <div className="flex flex-wrap gap-1.5">
-          {ALL_BRANDS.map((brand) => (
+          {options.brands.map((brand) => (
             <ChipToggle
               key={brand}
               active={filters.brands.includes(brand)}
@@ -256,7 +264,7 @@ function FilterPanel({
             className="flex-1 rounded-lg border border-gray-200 bg-white px-2 py-2.5 text-sm text-[#1a1a2e] outline-none transition focus:border-[#1e3a8a] focus:ring-2 focus:ring-[#1e3a8a]/20"
           >
             <option value="all">Оноос</option>
-            {ALL_YEARS.map((y) => (
+            {options.years.map((y) => (
               <option key={y} value={y}>
                 {y}
               </option>
@@ -269,7 +277,7 @@ function FilterPanel({
             className="flex-1 rounded-lg border border-gray-200 bg-white px-2 py-2.5 text-sm text-[#1a1a2e] outline-none transition focus:border-[#1e3a8a] focus:ring-2 focus:ring-[#1e3a8a]/20"
           >
             <option value="all">Хүртэл</option>
-            {ALL_YEARS.map((y) => (
+            {options.years.map((y) => (
               <option key={y} value={y}>
                 {y}
               </option>
@@ -285,7 +293,7 @@ function FilterPanel({
           <ChipToggle active={filters.transmission === "all"} onClick={() => set("transmission", "all")}>
             Бүгд
           </ChipToggle>
-          {ALL_TRANSMISSIONS.map((t) => (
+          {options.transmissions.map((t) => (
             <ChipToggle
               key={t}
               active={filters.transmission === t}
@@ -313,7 +321,7 @@ function FilterPanel({
       <div>
         <FilterLabel>Шатахууны төрөл</FilterLabel>
         <div className="flex flex-wrap gap-1.5">
-          {ALL_FUEL_TYPES.map((f) => (
+          {options.fuelTypes.map((f) => (
             <ChipToggle
               key={f}
               active={filters.fuelTypes.includes(f)}
@@ -339,9 +347,25 @@ function FilterPanel({
 
 // ─── main page ────────────────────────────────────────────────────────────────
 
-export default function CarsPage() {
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS)
+function CarsPageContent() {
+  const searchParams = useSearchParams()
+  const [cars, setCars] = useState<Car[]>([])
+  const [loading, setLoading] = useState(true)
+  const [filters, setFilters] = useState<FilterState>(() => ({
+    ...DEFAULT_FILTERS,
+    search: searchParams.get("search") ?? "",
+    brands: searchParams.get("brand") ? [searchParams.get("brand")!] : [],
+    priceRange: searchParams.get("priceRange") ?? "all",
+    yearMin: searchParams.get("yearMin") ?? "all",
+    yearMax: searchParams.get("yearMax") ?? "all",
+  }))
   const [sortBy, setSortBy] = useState("default")
+
+  useEffect(() => {
+    fetchCars().then(setCars).catch(() => {}).finally(() => setLoading(false))
+  }, [])
+
+  const options = useMemo(() => deriveOptions(cars), [cars])
 
   const activeCount = useMemo(() => {
     let n = 0
@@ -427,7 +451,7 @@ export default function CarsPage() {
   }, [filters])
 
   const results = useMemo(() => {
-    const list = carListings.filter((car) => {
+    const list = cars.filter((car) => {
       const q = filters.search.trim().toLowerCase()
       if (q && !`${car.year} ${car.name}`.toLowerCase().includes(q)) return false
       if (filters.status === "available" && car.badge === "SOLD") return false
@@ -453,7 +477,7 @@ export default function CarsPage() {
       list.sort((a, b) => parseMileageNum(a.mileage) - parseMileageNum(b.mileage))
 
     return list
-  }, [filters, sortBy])
+  }, [cars, filters, sortBy])
 
   return (
     <>
@@ -507,7 +531,7 @@ export default function CarsPage() {
                       Шүүлтүүр
                     </SheetTitle>
                   </SheetHeader>
-                  <FilterPanel filters={filters} setFilters={setFilters} />
+                  <FilterPanel filters={filters} setFilters={setFilters} options={options} />
                 </SheetContent>
               </Sheet>
             </div>
@@ -551,13 +575,19 @@ export default function CarsPage() {
                     </span>
                   )}
                 </div>
-                <FilterPanel filters={filters} setFilters={setFilters} />
+                <FilterPanel filters={filters} setFilters={setFilters} options={options} />
               </div>
             </aside>
 
             {/* Cars grid */}
             <div className="flex-1 min-w-0">
-              {results.length === 0 ? (
+              {loading ? (
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="h-72 animate-pulse rounded-2xl bg-gray-100" />
+                  ))}
+                </div>
+              ) : results.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 px-6 py-16 text-center">
                   <p className="font-semibold text-[#1a1a2e]">Шүүлтүүрт тохирох машин байхгүй</p>
                   <p className="mt-1 text-sm text-gray-500">
@@ -579,12 +609,17 @@ export default function CarsPage() {
                       className="group overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-gray-100 transition-all duration-200 hover:scale-[1.02] hover:shadow-xl"
                     >
                       <div className="relative aspect-video overflow-hidden bg-gray-200">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={car.image}
-                          alt={`${car.year} ${car.name}`}
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
+                        {getMainImage(car.image) ? (
+                          <Image
+                            src={getMainImage(car.image)}
+                            alt={`${car.year} ${car.name}`}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                        ) : (
+                          <div className="h-full w-full bg-gray-200" />
+                        )}
                         <span
                           className={`absolute left-3 top-3 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
                             car.badge === "SOLD"
@@ -619,7 +654,7 @@ export default function CarsPage() {
 
                         <Link
                           href={`/cars/${getCarSlug(car)}`}
-                          className="mt-4 inline-flex w-full items-center justify-center rounded-xl border-2 border-[#1e3a8a] py-2 text-sm font-semibold text-[#1e3a8a] transition-colors hover:bg-[#1e3a8a] hover:text-white"
+                          className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-[#1e3a8a] py-2.5 text-sm font-semibold text-[#1e3a8a] transition-colors hover:bg-[#1e3a8a] hover:text-white"
                         >
                           Дэлгэрэнгүй
                         </Link>
@@ -635,5 +670,13 @@ export default function CarsPage() {
         <Footer />
       </main>
     </>
+  )
+}
+
+export default function CarsPage() {
+  return (
+    <Suspense>
+      <CarsPageContent />
+    </Suspense>
   )
 }

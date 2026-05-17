@@ -7,8 +7,7 @@ import { Car, House, MessageCircle, Phone } from "lucide-react"
 
 const navLinks = [
   { label: "Нүүр", href: "/" },
-  { label: "Машинууд", href: "/cars" },
-  { label: "Холбоо барих", href: "/#contact" },
+  { label: "Машин", href: "/cars" },
 ]
 
 export default function Navbar() {
@@ -38,7 +37,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10)
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
@@ -113,18 +112,12 @@ export default function Navbar() {
             onClick={() => navigateToHashSection("#contact")}
             className="rounded-lg bg-[#1e3a8a] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#172554]"
           >
-            Асуулга
+            Холбоо барих
           </button>
         </div>
 
         {/* Mobile quick action */}
-        <a
-          href="tel:+97699001234"
-          className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-[#1a1a2e] lg:hidden"
-        >
-          <Phone className="h-4 w-4 text-[#1e3a8a]" />
-          Залгах
-        </a>
+       
         </div>
       </header>
 

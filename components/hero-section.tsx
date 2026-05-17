@@ -1,24 +1,25 @@
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 
 export default function HeroSection() {
   return (
-    <section
-      className="relative min-h-[560px] w-full bg-cover bg-center flex items-center"
-      style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80')",
-      }}
-    >
+    <section className="relative min-h-[560px] w-full flex items-center overflow-hidden">
+      <Image
+        src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80"
+        alt=""
+        fill
+        priority
+        className="object-cover object-center"
+        sizes="100vw"
+      />
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#1a1a2e]/90 via-[#1a1a2e]/70 to-transparent" />
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-20 lg:px-8">
         <div className="max-w-xl">
           {/* Badge */}
-          <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur-sm ring-1 ring-white/20">
-            <span>🇯🇵</span> Японоос Монгол руу тээвэрлэлт
-          </span>
+          
 
           {/* Heading */}
           <h1 className="mb-4 text-4xl font-black leading-tight text-white text-balance md:text-5xl lg:text-6xl">

@@ -1,13 +1,8 @@
-import AnnouncementBar from "@/components/announcement-bar"
 import Navbar from "@/components/navbar"
 import HeroSection from "@/components/hero-section"
 import SearchBar from "@/components/search-bar"
-import StatsBar from "@/components/stats-bar"
 import FeaturedStock from "@/components/featured-stock"
-import WhyChooseUs from "@/components/why-choose-us"
-import HowItWorks from "@/components/how-it-works"
 import ShippingInfo from "@/components/shipping-info"
-import Testimonials from "@/components/testimonials"
 import ContactForm from "@/components/contact-form"
 import Footer from "@/components/footer"
 

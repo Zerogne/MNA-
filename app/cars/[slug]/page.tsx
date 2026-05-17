@@ -1,29 +1,28 @@
-import Link from "next/link"
 import { notFound } from "next/navigation"
+import Link from "next/link"
+import Image from "next/image"
 import { ArrowLeft, Gauge, Settings2, RefreshCcw, BadgeDollarSign } from "lucide-react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
-import { carListings, getCarBySlug, getCarSlug } from "@/lib/cars"
+import { supabase } from "@/lib/supabase"
+import { getCarSlug, getImageList, type Car } from "@/lib/api"
 
 type CarDetailPageProps = {
   params: Promise<{ slug: string }>
 }
 
-export function generateStaticParams() {
-  return carListings.map((car) => ({
-    slug: getCarSlug(car),
-  }))
+function getCarBySlug(cars: Car[], slug: string) {
+  return cars.find((c) => getCarSlug(c) === slug)
 }
 
 export default async function CarDetailPage({ params }: CarDetailPageProps) {
   const { slug } = await params
-  const car = getCarBySlug(slug)
-  const galleryImages = [
-    car?.image,
-    ...carListings.filter((item) => item.name !== car?.name || item.year !== car?.year).map((item) => item.image),
-  ].filter(Boolean) as string[]
+  const { data: cars } = await supabase.from('cars').select('*').order('created_at', { ascending: false })
+  const car = getCarBySlug(cars ?? [], slug)
 
   if (!car) notFound()
+
+  const galleryImages = getImageList(car.image)
 
   return (
     <>
@@ -32,76 +31,91 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
       <main className="w-full bg-white">
         <section className="py-10">
           <div className="mx-auto max-w-7xl space-y-8 px-4 lg:px-8">
-            <>
-              <div className="space-y-3 md:hidden">
-                <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-1">
-                  {galleryImages.map((image, index) => (
-                    <div
-                      key={`${image}-${index}`}
-                      id={`car-image-${index + 1}`}
-                      className="min-w-full snap-start overflow-hidden rounded-2xl bg-gray-100 ring-1 ring-gray-200"
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={image}
-                        alt={`${car.year} ${car.name} ${index + 1}`}
-                        className="h-[260px] w-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-center gap-1.5">
-                  {galleryImages.map((image, index) => (
-                    <a
-                      key={`dot-${image}-${index}`}
-                      href={`#car-image-${index + 1}`}
-                      className="h-2 w-2 rounded-full bg-[#1e3a8a]/40 transition-colors hover:bg-[#1e3a8a]"
-                      aria-label={`Go to image ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="relative hidden md:block">
-                <div className="absolute -left-2 top-2 z-20 -translate-x-full pr-3 lg:-left-3">
-                  <Link
-                    href="/cars"
-                    className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-[#1a1a2e] shadow-sm transition-colors hover:bg-[#eff6ff]"
-                  >
-                    <ArrowLeft className="h-3.5 w-3.5" />
-                    Жагсаалт руу буцах
-                  </Link>
-                </div>
-
-                <div className="grid grid-cols-[2fr_3fr] gap-3">
-                  <div className="relative overflow-hidden rounded-2xl bg-gray-100 ring-1 ring-gray-200">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={galleryImages[0]}
-                      alt={`${car.year} ${car.name} main`}
-                      className="h-[420px] w-full object-cover"
-                    />
-                    <span className="absolute bottom-3 left-3 rounded-md bg-[#111827]/75 px-2 py-1 text-xs font-semibold text-white">
-                      1/{galleryImages.length}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    {galleryImages.slice(1, 5).map((image, index) => (
-                      <div key={`${image}-desktop-${index}`} className="relative overflow-hidden rounded-2xl bg-gray-100 ring-1 ring-gray-200">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+            {galleryImages.length > 0 && (
+              <>
+                {/* Mobile swipeable gallery */}
+                <div className="space-y-3 md:hidden">
+                  <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-1">
+                    {galleryImages.map((image, index) => (
+                      <div
+                        key={`${image}-${index}`}
+                        id={`car-image-${index + 1}`}
+                        className="relative h-[260px] min-w-full snap-start overflow-hidden rounded-2xl bg-gray-100 ring-1 ring-gray-200"
+                      >
+                        <Image
                           src={image}
-                          alt={`${car.year} ${car.name} preview ${index + 2}`}
-                          className="h-[203px] w-full object-cover"
+                          alt={`${car.year} ${car.name} ${index + 1}`}
+                          fill
+                          className="object-cover"
+                          sizes="100vw"
+                          priority={index === 0}
                         />
                       </div>
                     ))}
                   </div>
+
+                  {galleryImages.length > 1 && (
+                    <div className="flex items-center justify-center gap-1.5">
+                      {galleryImages.map((image, index) => (
+                        <a
+                          key={`dot-${image}-${index}`}
+                          href={`#car-image-${index + 1}`}
+                          className="h-2 w-2 rounded-full bg-[#1e3a8a]/40 transition-colors hover:bg-[#1e3a8a]"
+                          aria-label={`Go to image ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
-            </>
+
+                {/* Desktop grid */}
+                <div className="relative hidden md:block">
+                  <div className="absolute -left-2 top-2 z-20 -translate-x-full pr-3 lg:-left-3">
+                    <Link
+                      href="/cars"
+                      className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-[#1a1a2e] shadow-sm transition-colors hover:bg-[#eff6ff]"
+                    >
+                      <ArrowLeft className="h-3.5 w-3.5" />
+                      Жагсаалт руу буцах
+                    </Link>
+                  </div>
+
+                  <div className={galleryImages.length > 1 ? "grid grid-cols-[2fr_3fr] gap-3" : ""}>
+                    <div className="relative h-[420px] overflow-hidden rounded-2xl bg-gray-100 ring-1 ring-gray-200">
+                      <Image
+                        src={galleryImages[0]}
+                        alt={`${car.year} ${car.name} main`}
+                        fill
+                        priority
+                        className="object-cover"
+                        sizes="40vw"
+                      />
+                      {galleryImages.length > 1 && (
+                        <span className="absolute bottom-3 left-3 rounded-md bg-[#111827]/75 px-2 py-1 text-xs font-semibold text-white">
+                          1/{galleryImages.length}
+                        </span>
+                      )}
+                    </div>
+
+                    {galleryImages.length > 1 && (
+                      <div className="grid grid-cols-2 gap-3">
+                        {galleryImages.slice(1, 5).map((image, index) => (
+                          <div key={`${image}-desktop-${index}`} className="relative h-[203px] overflow-hidden rounded-2xl bg-gray-100 ring-1 ring-gray-200">
+                            <Image
+                              src={image}
+                              alt={`${car.year} ${car.name} preview ${index + 2}`}
+                              fill
+                              className="object-cover"
+                              sizes="30vw"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
               <span
@@ -147,6 +161,13 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                   </p>
                 </div>
               </div>
+
+              {car.description && (
+                <div className="mt-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Тайлбар</p>
+                  <p className="mt-2 leading-relaxed text-[#1a1a2e]">{car.description}</p>
+                </div>
+              )}
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link

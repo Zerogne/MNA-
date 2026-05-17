@@ -2,13 +2,31 @@
 
 import { useState } from "react"
 import { Send } from "lucide-react"
+import { submitInquiry } from "@/lib/api"
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setSubmitted(true)
+    const form = e.currentTarget
+    const data = new FormData(form)
+    setSubmitting(true)
+    try {
+      await submitInquiry({
+        name: data.get("name") as string,
+        email: data.get("email") as string,
+        phone: data.get("phone") as string,
+        car: (data.get("car") as string) || undefined,
+        message: data.get("message") as string,
+      })
+      setSubmitted(true)
+    } catch {
+      alert("Алдаа гарлаа. Дахин оролдоно уу.")
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -58,6 +76,7 @@ export default function ContactForm() {
                   </label>
                   <input
                     type="text"
+                    name="name"
                     required
                     placeholder="Батбаяр Дорж"
                     className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#1a1a2e] placeholder-gray-400 transition focus:border-[#1e3a8a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20"
@@ -69,6 +88,7 @@ export default function ContactForm() {
                   </label>
                   <input
                     type="email"
+                    name="email"
                     required
                     placeholder="you@example.com"
                     className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#1a1a2e] placeholder-gray-400 transition focus:border-[#1e3a8a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20"
@@ -82,6 +102,7 @@ export default function ContactForm() {
                 </label>
                 <input
                   type="tel"
+                  name="phone"
                   required
                   placeholder="+976 9900 1234"
                   className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#1a1a2e] placeholder-gray-400 transition focus:border-[#1e3a8a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20"
@@ -94,6 +115,7 @@ export default function ContactForm() {
                 </label>
                 <input
                   type="text"
+                  name="car"
                   placeholder="e.g. Toyota Land Cruiser 2020"
                   className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#1a1a2e] placeholder-gray-400 transition focus:border-[#1e3a8a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20"
                 />
@@ -104,6 +126,7 @@ export default function ContactForm() {
                   Мессеж
                 </label>
                 <textarea
+                  name="message"
                   rows={4}
                   placeholder="Төсөв, хүссэн өнгө, тусгай шаардлагаа бидэнд хэлнэ үү..."
                   className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-[#1a1a2e] placeholder-gray-400 transition focus:border-[#1e3a8a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1e3a8a]/20"
@@ -112,10 +135,11 @@ export default function ContactForm() {
 
               <button
                 type="submit"
-                className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1e3a8a] py-4 text-sm font-bold text-white shadow-md shadow-[#1e3a8a]/30 transition-all hover:-translate-y-0.5 hover:bg-[#172554] hover:shadow-lg"
+                disabled={submitting}
+                className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1e3a8a] py-4 text-sm font-bold text-white shadow-md shadow-[#1e3a8a]/30 transition-all hover:-translate-y-0.5 hover:bg-[#172554] hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <Send className="h-4 w-4" />
-                Асуулга илгээх
+                {submitting ? "Илгээж байна…" : "Илгээх"}
               </button>
             </form>
           </div>

@@ -44,9 +44,9 @@ export default function ShippingInfo() {
           {/* Right — info card */}
           <div className="rounded-2xl bg-white p-7 shadow-2xl">
             <h3 className="mb-5 text-lg font-black text-[#1a1a2e]">Тээвэрлэлтийн товч мэдээлэл</h3>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-4">
               {infoCards.map((item) => (
-                <div key={item.label} className="flex items-center justify-between border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+                <div key={item.label} className="flex items-center justify-between border-b border-gray-100 pb-4 last:border-0 last:pb-0">
                   <span className="text-sm font-medium text-gray-500">{item.label}</span>
                   <span className="text-sm font-bold text-[#1a1a2e]">{item.value}</span>
                 </div>

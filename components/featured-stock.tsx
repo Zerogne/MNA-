@@ -1,8 +1,19 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Gauge, Settings2, RefreshCcw, ArrowRight } from "lucide-react"
-import { carListings, getCarSlug } from "@/lib/cars"
+import { supabase } from "@/lib/supabase"
+import { getCarSlug, getMainImage, type Car } from "@/lib/api"
 
-export default function FeaturedStock() {
+export default async function FeaturedStock() {
+  let cars: Car[] = []
+  try {
+    const { data } = await supabase.from('cars').select('*').order('created_at', { ascending: false }).limit(4)
+    cars = data ?? []
+  } catch {
+    // DB not reachable — render empty section
+  }
+
+
   return (
     <section id="stock" className="w-full bg-white py-16">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
@@ -22,25 +33,27 @@ export default function FeaturedStock() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {carListings.slice(0, 4).map((car) => (
+          {cars.map((car) => (
             <article
-              key={car.name + car.year}
+              key={car.id}
               className="group overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-gray-100 transition-all duration-200 hover:shadow-xl hover:scale-[1.02]"
             >
               {/* Image */}
               <div className="relative aspect-video overflow-hidden bg-gray-200">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={car.image}
-                  alt={`${car.year} ${car.name}`}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                {/* Badge */}
+                {getMainImage(car.image) ? (
+                  <Image
+                    src={getMainImage(car.image)}
+                    alt={`${car.year} ${car.name}`}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
+                ) : (
+                  <div className="h-full w-full bg-gray-200" />
+                )}
                 <span
                   className={`absolute left-3 top-3 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${
-                    car.badge === "SOLD"
-                      ? "bg-gray-800 text-white"
-                      : "bg-[#1e3a8a] text-white"
+                    car.badge === "SOLD" ? "bg-gray-800 text-white" : "bg-[#1e3a8a] text-white"
                   }`}
                 >
                   {car.badge}
@@ -73,7 +86,7 @@ export default function FeaturedStock() {
                 {/* CTA */}
                 <Link
                   href={`/cars/${getCarSlug(car)}`}
-                  className="mt-4 inline-flex w-full items-center justify-center rounded-xl border-2 border-[#1e3a8a] py-2 text-sm font-semibold text-[#1e3a8a] transition-colors hover:bg-[#1e3a8a] hover:text-white"
+                  className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-[#1e3a8a] py-2.5 text-sm font-semibold text-[#1e3a8a] transition-colors hover:bg-[#1e3a8a] hover:text-white"
                 >
                   Дэлгэрэнгүй
                 </Link>

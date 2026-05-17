@@ -15,7 +15,7 @@ export default function StatsBar() {
               key={stat.label}
               className={`flex flex-col items-center text-center ${
                 i < stats.length - 1
-                  ? "md:border-r md:border-gray-300"
+                  ? "md:border-r md:border-gray-200"
                   : ""
               }`}
             >

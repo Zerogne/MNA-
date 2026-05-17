@@ -25,7 +25,7 @@ export default function HowItWorks() {
   return (
     <section id="how-to-buy" className="w-full bg-white py-16">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
-        <div className="mb-14 text-center">
+        <div className="mb-12 text-center">
           <h2 className="text-3xl font-black text-[#1a1a2e] text-balance">
             4 алхамаар хэрхэн худалдан авах вэ
           </h2>
