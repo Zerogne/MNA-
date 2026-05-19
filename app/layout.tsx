@@ -6,8 +6,8 @@ import './globals.css'
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
-  title: 'JapanCarsMongolia — Mongolia\'s #1 Japanese Used Car Exporter',
-  description: 'Quality Japanese used cars shipped directly to Ulaanbaatar, Mongolia. Browse our stock of 10,000+ cars from Japan auctions with fast, reliable shipping.',
+  title: 'KoreaCarsMongolia — Mongolia\'s #1 Korean Used Car Exporter',
+  description: 'Quality Korean used cars shipped directly to Ulaanbaatar, Mongolia. Browse our stock of 10,000+ cars from Korean auctions with fast, reliable shipping.',
   generator: 'v0.app',
   icons: {
     icon: [
