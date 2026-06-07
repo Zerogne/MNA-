@@ -13,9 +13,6 @@ const infoCards = [
   { label: "Гарах боомт", value: "Олон улсын боомт" },
   { label: "Очих газар", value: "Улаанбаатар, Монгол" },
   { label: "Дамжих хугацаа", value: "6–8 долоо хоног" },
-  { label: "Гаалийн татвар", value: "Туслалцаа багтсан" },
-  { label: "НӨАТ", value: "Импортын үнийн 10%" },
-  { label: "Насны хязгаар", value: "Монголд байхгүй" },
 ]
 
 export default function ShippingInfo() {

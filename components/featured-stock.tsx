@@ -20,7 +20,7 @@ export default async function FeaturedStock() {
         {/* Section header */}
         <div className="mb-10 flex items-end justify-between">
           <div>
-            <h2 className="text-3xl font-black text-[#1a1a2e] text-balance">Шинэ нөөц</h2>
+            <h2 className="text-3xl font-black text-[#1a1a2e] text-balance">Шинэ</h2>
             <div className="mt-2 h-1 w-14 rounded-full bg-[#1e3a8a]" />
           </div>
           <Link
