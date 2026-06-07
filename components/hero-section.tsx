@@ -27,9 +27,7 @@ export default function HeroSection() {
           </h1>
 
           {/* Subtext */}
-          <p className="mb-8 text-lg leading-relaxed text-white/80">
-            Чанартай хуучин машиныг шууд Улаанбаатарт хүргэнэ. Зуучгүй.
-          </p>
+         
 
           {/* CTAs */}
           <div className="flex flex-wrap gap-4">

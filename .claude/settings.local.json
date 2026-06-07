@@ -20,7 +20,8 @@
       "Read(//Users/bayarbayasgalanulambayar/**)",
       "Bash(pwd -P)",
       "Bash(echo \"pwd -P \\(resolved\\): $\\(pwd -P\\)\")",
-      "Bash(node -e \"import\\('node:url'\\).then\\(async u=>{const p=await import\\('node:path'\\);const d=p.dirname\\(u.fileURLToPath\\(new URL\\('file://'+process.cwd\\(\\)+'/next.config.mjs'\\)\\)\\);console.log\\('config dir:',d\\)}\\)\")"
+      "Bash(node -e \"import\\('node:url'\\).then\\(async u=>{const p=await import\\('node:path'\\);const d=p.dirname\\(u.fileURLToPath\\(new URL\\('file://'+process.cwd\\(\\)+'/next.config.mjs'\\)\\)\\);console.log\\('config dir:',d\\)}\\)\")",
+      "Bash(npm run *)"
     ]
   }
 }
