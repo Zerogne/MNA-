@@ -23,7 +23,7 @@ export default function HeroSection() {
 
           {/* Heading */}
           <h1 className="mb-4 text-4xl font-black leading-tight text-white text-balance md:text-5xl lg:text-6xl">
-            Өөрт тохирсон Япон машинаа олоорой
+            Өөрт тохирсон машинаа олоорой
           </h1>
 
           {/* Subtext */}

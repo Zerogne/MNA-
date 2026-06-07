@@ -27,15 +27,15 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1e3a8a]">
-                <span className="text-sm font-black text-white">JCM</span>
+                <span className="text-sm font-black text-white">MNA</span>
               </div>
               <div className="leading-tight">
-                <p className="text-sm font-black tracking-tight">JAPANCARS</p>
+                <p className="text-sm font-black tracking-tight">MNA CAR</p>
                 <p className="text-[10px] font-semibold uppercase tracking-widest text-[#1e3a8a]">Mongolia</p>
               </div>
             </div>
             <p className="mt-4 text-sm leading-relaxed text-white/60">
-              Монголын хамгийн итгэмжлэгдсэн Япон хуучин машины экспортлогч. 2002 оноос хойш Монгол жолооч нарыг Японы чанартай тээврийн хэрэгслүүдтэй холбож байна.
+              Монголын хамгийн итгэмжлэгдсэн хуучин машины импортлогч. 2002 оноос хойш Монгол жолооч нарыг чанартай тээврийн хэрэгслүүдтэй холбож байна.
             </p>
             {/* Socials */}
             <div className="mt-5 flex gap-3">
@@ -110,8 +110,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 shrink-0 text-[#1e3a8a]" />
-                <a href="mailto:info@japancarsmongolia.com" className="text-sm text-white/70 hover:text-[#1e3a8a] transition-colors">
-                  info@japancarsmongolia.com
+                <a href="mailto:info@mnacar.mn" className="text-sm text-white/70 hover:text-[#1e3a8a] transition-colors">
+                  info@mnacar.mn
                 </a>
               </li>
               <li className="flex items-start gap-3">
@@ -129,7 +129,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-7xl px-4 py-5 lg:px-8">
           <p className="text-center text-xs text-white/40">
-            &copy; {new Date().getFullYear()} JapanCarsMongolia. Бүх эрх хуулиар хамгаалагдсан. SAT Japan-тай холбоогүй.
+            &copy; {new Date().getFullYear()} MNA Car. Бүх эрх хуулиар хамгаалагдсан.
           </p>
         </div>
       </div>

@@ -1,8 +1,8 @@
 const stats = [
-  { value: "10,000+", label: "Машин байна" },
+  { value: "10,000+", label: "Машины нөөц" },
   { value: "22", label: "Жилийн туршлага" },
   { value: "5,000+", label: "Сэтгэл хангалуун үйлчлүүлэгч" },
-  { value: "Шууд", label: "Японоос тээвэр" },
+  { value: "Шууд", label: "Гадаадаас тээвэр" },
 ]
 
 export default function StatsBar() {

@@ -117,7 +117,7 @@ function SidebarNav({ active, onSelect }: { active: View; onSelect: (v: View) =>
         <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#1e3a8a]">
           <Car className="h-4 w-4 text-white" />
         </div>
-        <span className="text-sm font-bold text-slate-900">JCM Admin</span>
+        <span className="text-sm font-bold text-slate-900">MNA Car Admin</span>
       </div>
       <nav className="flex-1 space-y-0.5 p-3">
         {NAV.map(({ id, label, icon: Icon }) => (

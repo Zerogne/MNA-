@@ -66,10 +66,10 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1e3a8a]">
-            <span className="text-sm font-black text-white">JCM</span>
+            <span className="text-sm font-black text-white">MNA</span>
           </div>
           <div className="leading-tight">
-            <p className="text-sm font-black tracking-tight text-[#1a1a2e]">JAPANCARS</p>
+            <p className="text-sm font-black tracking-tight text-[#1a1a2e]">MNA CAR</p>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-[#1e3a8a]">Mongolia</p>
           </div>
         </Link>

@@ -6,8 +6,8 @@ import './globals.css'
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
-  title: 'JapanCarsMongolia — Mongolia\'s #1 Japanese Used Car Exporter',
-  description: 'Quality Japanese used cars shipped directly to Ulaanbaatar, Mongolia. Browse our stock of 10,000+ cars from Japan auctions with fast, reliable shipping.',
+  title: 'MNA Car — Mongolia\'s #1 Used Car Importer',
+  description: 'Quality used cars shipped directly to Ulaanbaatar, Mongolia. Browse our stock of 10,000+ cars from international auctions with fast, reliable shipping.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} bg-background`}>
+    <html lang="mn" className={`${inter.variable} bg-background`}>
       <body className="font-sans antialiased min-h-screen">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
